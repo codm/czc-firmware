@@ -9,14 +9,24 @@ var uglify = require('gulp-uglify');
 var pump = require('pump');
 
 function stylesConcat() {
-    return gulp.src(['../../src/websrc/css/style.css', '../../src/websrc/css/bootstrap.min.css'])
+    return gulp.src(['../../src/websrc/css/bootstrap.min.css', '../../src/websrc/css/style.css'])
+        .pipe(flatmap(function(stream, file) {
+            if (process.env.PIOENV == "prodcodm") {
+                var filename = path.basename(file.path);
+                var filepath = path.dirname(file.path);
+                if (fs.existsSync(`${filepath}/codm/${filename}`)) {
+                    console.log(`Replacing ${filepath}/${filename} with cod.m version. (${filepath}/codm/${filename})`);
+                    return gulp.src(`${filepath}/codm/${filename}`);
+                }
+            }
+            return stream;
+        }))
         .pipe(concat({
             path: 'required.css',
             stat: {
                 mode: 0666
             }
         }))
-        .pipe(gulp.dest('../../src/websrc/css/'))
         .pipe(gzip({
             append: true
         }))
@@ -119,10 +129,20 @@ function fonts() {
 
 function imggz() {
 	return gulp.src("../../src/websrc/img/*.*")
-        .pipe(gulp.dest("../../src/websrc/img/"))
-            .pipe(gzip({
-                append: true
-            }))
+        .pipe(flatmap(function(stream, file) {
+            if (process.env.PIOENV == "prodcodm") {
+                var filename = path.basename(file.path);
+                var filepath = path.dirname(file.path);
+                if (fs.existsSync(`${filepath}/codm/${filename}`)) {
+                    console.log(`Replacing ${filepath}/${filename} with cod.m version. (${filepath}/codm/${filename})`);
+                    return gulp.src(`${filepath}/codm/${filename}`);
+                }
+            }
+            return stream;
+        }))
+        .pipe(gzip({
+            append: true
+        }))
         .pipe(gulp.dest('../../src/websrc/gzipped/img/'));
 }
 
@@ -153,10 +173,20 @@ function imgs() {
 
 function htmlgz() {
 	return gulp.src("../../src/websrc/html/*.*")
-        .pipe(gulp.dest("../../src/websrc/html/"))
-            .pipe(gzip({
-                append: true
-            }))
+        .pipe(flatmap(function(stream, file) {
+            if (process.env.PIOENV == "prodcodm") {
+                var filename = path.basename(file.path);
+                var filepath = path.dirname(file.path);
+                if (fs.existsSync(`${filepath}/codm/${filename}`)) {
+                    console.log(`Replacing ${filepath}/${filename} with cod.m version. (${filepath}/codm/${filename})`);
+                    return gulp.src(`${filepath}/codm/${filename}`);
+                }
+            }
+            return stream;
+        }))
+        .pipe(gzip({
+            append: true
+        }))
         .pipe(gulp.dest('../../src/websrc/gzipped/html/'));
 }
 
