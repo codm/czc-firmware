@@ -5,6 +5,7 @@
 #include <CircularBuffer.h>
 #include "version.h"
 
+#ifdef prodcodm
 #define DEBUG
 //ESP32 PINS TO CONTROL LAN8720
 #define ETH_CLK_MODE_1 ETH_CLOCK_GPIO17_OUT
@@ -25,6 +26,33 @@
 #define PRODUCTION 1
 #define TCP_LISTEN_PORT 9999
 #define FORMAT_LITTLEFS_IF_FAILED true
+#define BOARD_DEVICE_MODEL "CODM-ZIG2TCP-01"
+#define BOARD_MDNS_HOST "_codm-zig2tcp-01"
+#else
+#define DEBUG
+//ESP32 PINS TO CONTROL LAN8720
+#define ETH_CLK_MODE_1 ETH_CLOCK_GPIO17_OUT
+#define ETH_POWER_PIN_ALTERNATIVE_1 5
+#define ETH_POWER_PIN_1 -1
+#define ETH_TYPE_1 ETH_PHY_LAN8720
+#define ETH_ADDR_1 0
+#define ETH_MDC_PIN_1 23
+#define ETH_MDIO_PIN_1 18
+//ESP32 PINS TO CONTROL CC2652P
+#define CC2652P_RST 16
+#define CC2652P_FLSH 32
+#define CC2652P_RXD 36
+#define CC2652P_TXD 4
+#define BTN 35
+#define MODE_SWITCH 33
+#define DEBOUNCE_TIME 70
+#define PRODUCTION 1
+#define TCP_LISTEN_PORT 9999
+#define FORMAT_LITTLEFS_IF_FAILED true
+#define BOARD_DEVICE_MODEL "UZG-01"
+#define BOARD_MDNS_HOST "_uzg-01"
+#endif
+
 
 const int16_t overseerInterval = 10 * 1000; //check lan or wifi connection every 5sec
 const uint8_t overseerMaxRetry = 3; //5x12 = 60sec delay for AP start
