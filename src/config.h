@@ -5,8 +5,8 @@
 #include <CircularBuffer.h>
 #include "version.h"
 
-#ifdef prodcodm
-// #define DEBUG
+#ifdef CODM_BOARD
+#define DEBUG
 // ESP32 PINS TO CONTROL LAN8720
 #define ETH_CLK_MODE_1 ETH_CLOCK_GPIO17_OUT
 #define ETH_POWER_PIN_ALTERNATIVE_1 5
@@ -26,10 +26,9 @@
 #define PRODUCTION 1
 #define TCP_LISTEN_PORT 9999
 #define FORMAT_LITTLEFS_IF_FAILED true
-#define BOARD_DEVICE_MODEL "CODM-ZIG2TCP-01"
+#define BOARD_DEVICE_MODEL "CODM-Z2T"
 #define BOARD_MDNS_HOST "_codm-zig2tcp-01"
 #else
-#define DEBUG
 //ESP32 PINS TO CONTROL LAN8720
 #define ETH_CLK_MODE_1 ETH_CLOCK_GPIO17_OUT
 #define ETH_POWER_PIN_ALTERNATIVE_1 5
