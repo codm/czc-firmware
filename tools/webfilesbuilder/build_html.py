@@ -16,6 +16,10 @@ os.chdir('./tools/webfilesbuilder/')
 cwd = os.getcwd()
 print("{0}".format(cwd))         
 
+os.environ["PIOENV"] = env["PIOENV"]
+
+print("pioenv: {0}".format(os.environ["PIOENV"]))
+
 env.Execute("npm install")
 
 env.Execute("npx gulp")

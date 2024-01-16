@@ -42,7 +42,7 @@ const char* configFileGeneral = "/config/configGeneral.json";
 const char* configFileSecurity = "/config/configSecurity.json";
 const char* configFileSerial = "/config/configSerial.json";
 const char* configFileMqtt = "/config/configMqtt.json";
-const char* deviceModel = "UZG-01";
+const char* deviceModel = BOARD_DEVICE_MODEL;
 
 void mDNS_start();
 void connectWifi();
@@ -665,7 +665,7 @@ void connectWifi(){
 
 void mDNS_start()
 {
-  const char* host = "_uzg-01";
+  const char* host = BOARD_MDNS_HOST;
   const char* http = "_http";
   const char* tcp = "_tcp";
   if (!MDNS.begin(ConfigSettings.hostname))
