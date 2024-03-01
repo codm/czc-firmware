@@ -18,8 +18,8 @@
 // ESP32 PINS TO CONTROL CC2652P
 #define CC2652P_RST 16
 #define CC2652P_FLSH 32
-#define CC2652P_RXD 36
-#define CC2652P_TXD 4
+#define CC2652P_RXD 36 //seen from ESP
+#define CC2652P_TXD 4 //seen from ESP
 #define BTN 35
 #define MODE_SWITCH 33
 #define DEBOUNCE_TIME 70
