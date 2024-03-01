@@ -61,10 +61,21 @@ function styles(cb) {
 
 function scriptsgz() {
 	return gulp.src("../../src/websrc/js/*.*")
+        .pipe(flatmap(function(stream, file) {
+            if (process.env.PIOENV == "prodcodm") {
+                var filename = path.basename(file.path);
+                var filepath = path.dirname(file.path);
+                if (fs.existsSync(`${filepath}/codm/${filename}`)) {
+                    console.log(`Replacing ${filepath}/${filename} with cod.m version. (${filepath}/codm/${filename})`);
+                    return gulp.src(`${filepath}/codm/${filename}`);
+                }
+            }
+            return stream;
+        }))
         .pipe(gulp.dest("../../src/websrc/js/"))
-            .pipe(gzip({
-                append: true
-            }))
+        .pipe(gzip({
+            append: true
+        }))
         .pipe(gulp.dest('../../src/websrc/gzipped/js/'));
 }
 

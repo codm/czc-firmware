@@ -162,7 +162,13 @@ void WiFiEvent(WiFiEvent_t event){
     DEBUG_PRINTLN(F("ETH MAC: "));
     DEBUG_PRINT(ETH.macAddress());
     DEBUG_PRINT(F(", IPv4: "));
-    DEBUG_PRINT(ETH.localIP());
+    DEBUG_PRINT(ETH.localIP()[0]);
+    DEBUG_PRINT(F("."));
+    DEBUG_PRINT(ETH.localIP()[1]);
+    DEBUG_PRINT(F("."));
+    DEBUG_PRINT(ETH.localIP()[2]);
+    DEBUG_PRINT(F("."));
+    DEBUG_PRINT(ETH.localIP()[3]);
     if (ETH.fullDuplex()){
       DEBUG_PRINT(F(", FULL_DUPLEX"));
     }
@@ -1066,7 +1072,9 @@ void loop(void){
       if (tmrBtnLongPress.state() == RUNNING){
         btnFlag = false;
         tmrBtnLongPress.stop();
+#ifdef PIOENV != "prodcodm"
         toggleUsbMode();
+#endif
       }
     }
   }
