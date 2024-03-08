@@ -29,6 +29,8 @@ ConfigSettingsStruct ConfigSettings;
 zbVerStruct zbVer;
 InfosStruct Infos;
 
+uint8_t _global_usb_mode = false;
+
 //volatile bool btnFlag = false;
 int btnFlag = false;
 bool updWeb = false;
@@ -807,7 +809,9 @@ void setupCoordinatorMode(){
   switch (ConfigSettings.coordinator_mode){
     case COORDINATOR_MODE_USB:
       DEBUG_PRINTLN(F("Coordinator USB mode"));
+      Serial.flush();
       digitalWrite(MODE_SWITCH, 1);
+      _global_usb_mode = true;
     break;
 
     case COORDINATOR_MODE_WIFI:
@@ -856,6 +860,7 @@ void setup(){
   pinMode(BTN, INPUT);
   pinMode(MODE_SWITCH, OUTPUT);
   digitalWrite(MODE_SWITCH, 0);//enable zigbee serial
+  _global_usb_mode = false;
   digitalWrite(LED_PWR, 1);
   digitalWrite(LED_USB, 1);
 
@@ -1072,9 +1077,7 @@ void loop(void){
       if (tmrBtnLongPress.state() == RUNNING){
         btnFlag = false;
         tmrBtnLongPress.stop();
-#ifdef PIOENV != "prodcodm"
         toggleUsbMode();
-#endif
       }
     }
   }
@@ -1164,7 +1167,6 @@ void loop(void){
     printSendSocket(serial_bytes_read, serial_buf);
     serial_bytes_read = 0;
   }
-  
 
   if (ConfigSettings.mqttEnable)
   {
@@ -1172,7 +1174,14 @@ void loop(void){
   }
 
   }
-  
+  else {
+    if(Serial1.available()) {
+      Serial.write(Serial1.read());
+    }
+    if(Serial.available()) {
+      Serial1.write(Serial.read());
+    }
+  }
 
   if (WiFi.getMode() == WIFI_MODE_AP || WiFi.getMode() == WIFI_MODE_APSTA)
   {

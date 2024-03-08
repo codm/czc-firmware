@@ -6,7 +6,6 @@
 #include "version.h"
 
 #ifdef CODM_BOARD
-#define DEBUG
 // ESP32 PINS TO CONTROL LAN8720
 #define ETH_CLK_MODE_1 ETH_CLOCK_GPIO17_OUT
 #define ETH_POWER_PIN_ALTERNATIVE_1 5
@@ -152,9 +151,11 @@ typedef CircularBuffer<char, 8024> LogConsoleType;
 
 // #define WL_MAC_ADDR_LENGTH 6
 
+extern uint8_t _global_usb_mode;
+
 #ifdef DEBUG
-#define DEBUG_PRINT(x) Serial.print(String(x))
-#define DEBUG_PRINTLN(x) Serial.println(String(x))
+#define DEBUG_PRINT(x) if(!_global_usb_mode) {Serial.print(String(x));}
+#define DEBUG_PRINTLN(x) if(!_global_usb_mode) {Serial.println(String(x));}
 #else
 #define DEBUG_PRINT(x)
 #define DEBUG_PRINTLN(x)

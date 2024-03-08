@@ -8,15 +8,23 @@ var htmlmin = require('gulp-htmlmin');
 var uglify = require('gulp-uglify');
 var pump = require('pump');
 
+function project_alternate_folder() {
+    if (["codm-v1-prod", "codm-v1-debug"].includes(process.env.PIOENV)) {
+        return "codm"
+    }
+    return "";
+}
+
 function stylesConcat() {
     return gulp.src(['../../src/websrc/css/bootstrap.min.css', '../../src/websrc/css/style.css'])
         .pipe(flatmap(function(stream, file) {
-            if (process.env.PIOENV == "prodcodm") {
+            let alternate = project_alternate_folder();
+            if (alternate != "") {
                 var filename = path.basename(file.path);
                 var filepath = path.dirname(file.path);
-                if (fs.existsSync(`${filepath}/codm/${filename}`)) {
-                    console.log(`Replacing ${filepath}/${filename} with cod.m version. (${filepath}/codm/${filename})`);
-                    return gulp.src(`${filepath}/codm/${filename}`);
+                if (fs.existsSync(`${filepath}/${alternate}/${filename}`)) {
+                    console.log(`Replacing ${filepath}/${filename} with alternate version: (${filepath}/${alternate}/${filename})`);
+                    return gulp.src(`${filepath}/${alternate}/${filename}`);
                 }
             }
             return stream;
@@ -62,12 +70,13 @@ function styles(cb) {
 function scriptsgz() {
 	return gulp.src("../../src/websrc/js/*.*")
         .pipe(flatmap(function(stream, file) {
-            if (process.env.PIOENV == "prodcodm") {
+            let alternate = project_alternate_folder();
+            if (alternate != "") {
                 var filename = path.basename(file.path);
                 var filepath = path.dirname(file.path);
-                if (fs.existsSync(`${filepath}/codm/${filename}`)) {
-                    console.log(`Replacing ${filepath}/${filename} with cod.m version. (${filepath}/codm/${filename})`);
-                    return gulp.src(`${filepath}/codm/${filename}`);
+                if (fs.existsSync(`${filepath}/${alternate}/${filename}`)) {
+                    console.log(`Replacing ${filepath}/${filename} with alternate version: (${filepath}/${alternate}/${filename})`);
+                    return gulp.src(`${filepath}/${alternate}/${filename}`);
                 }
             }
             return stream;
@@ -141,12 +150,13 @@ function fonts() {
 function imggz() {
 	return gulp.src("../../src/websrc/img/*.*")
         .pipe(flatmap(function(stream, file) {
-            if (process.env.PIOENV == "prodcodm") {
+            let alternate = project_alternate_folder();
+            if (alternate != "") {
                 var filename = path.basename(file.path);
                 var filepath = path.dirname(file.path);
-                if (fs.existsSync(`${filepath}/codm/${filename}`)) {
-                    console.log(`Replacing ${filepath}/${filename} with cod.m version. (${filepath}/codm/${filename})`);
-                    return gulp.src(`${filepath}/codm/${filename}`);
+                if (fs.existsSync(`${filepath}/${alternate}/${filename}`)) {
+                    console.log(`Replacing ${filepath}/${filename} with alternate version: (${filepath}/${alternate}/${filename})`);
+                    return gulp.src(`${filepath}/${alternate}/${filename}`);
                 }
             }
             return stream;
@@ -185,12 +195,13 @@ function imgs() {
 function htmlgz() {
 	return gulp.src("../../src/websrc/html/*.*")
         .pipe(flatmap(function(stream, file) {
-            if (process.env.PIOENV == "prodcodm") {
+            let alternate = project_alternate_folder();
+            if (alternate != "") {
                 var filename = path.basename(file.path);
                 var filepath = path.dirname(file.path);
-                if (fs.existsSync(`${filepath}/codm/${filename}`)) {
-                    console.log(`Replacing ${filepath}/${filename} with cod.m version. (${filepath}/codm/${filename})`);
-                    return gulp.src(`${filepath}/codm/${filename}`);
+                if (fs.existsSync(`${filepath}/${alternate}/${filename}`)) {
+                    console.log(`Replacing ${filepath}/${filename} with alternate version: (${filepath}/${alternate}/${filename})`);
+                    return gulp.src(`${filepath}/${alternate}/${filename}`);
                 }
             }
             return stream;
