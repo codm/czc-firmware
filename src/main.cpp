@@ -747,27 +747,21 @@ void handlelongBtn() {
       DEBUG_PRINTLN(F("s"));
       if (btnFlag >= 4) {
         printLogMsg("Long press 4sec - zigbeeEnableBSL");
+        // enable bsl
+        zigbeeEnableBSL();
         // Visual feedback
         if (_global_usb_mode) {
           digitalWrite(LED_USB, 0);
-          delay(200);
+          delay(1000);
         }
         digitalWrite(LED_USB, 1);
-        delay(200);
+        delay(1000);
         digitalWrite(LED_USB, 0);
-        delay(200);
+        delay(1000);
         digitalWrite(LED_USB, 1);
         if (!_global_usb_mode) {
-          delay(200);
+          delay(1000);
           digitalWrite(LED_USB, 0);
-        }
-        // enable bsl
-        zigbeeEnableBSL();
-        // Visual feedback that BSL is ready
-        if (_global_usb_mode) {
-          digitalWrite(LED_USB, 0);
-        } else {
-          digitalWrite(LED_USB, 1);
         }
         tmrBtnLongPress.stop();
         btnFlag = false;
