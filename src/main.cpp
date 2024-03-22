@@ -825,7 +825,7 @@ void setupCoordinatorMode(){
     case COORDINATOR_MODE_USB:
       DEBUG_PRINTLN(F("Coordinator USB mode"));
       Serial.flush();
-      digitalWrite(MODE_SWITCH, 1);
+      // digitalWrite(MODE_SWITCH, 1);
       _global_usb_mode = true;
     break;
 
@@ -1097,6 +1097,16 @@ void loop(void){
     }
   }
 
+  if (ConfigSettings.coordinator_mode == COORDINATOR_MODE_USB) {
+    if(Serial1.available()) {
+      Serial.write(Serial1.read());
+    }
+    if(Serial.available()) {
+      Serial1.write(Serial.read());
+    }
+    return;
+  }
+
   tmrBtnLongPress.update();
   tmrNetworkOverseer.update();
   if (updWeb){
@@ -1188,14 +1198,6 @@ void loop(void){
     mqttLoop();
   }
 
-  }
-  else {
-    if(Serial1.available()) {
-      Serial.write(Serial1.read());
-    }
-    if(Serial.available()) {
-      Serial1.write(Serial.read());
-    }
   }
 
   if (WiFi.getMode() == WIFI_MODE_AP || WiFi.getMode() == WIFI_MODE_APSTA)

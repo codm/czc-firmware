@@ -143,7 +143,7 @@ void adapterModeUSB()
   _global_usb_mode = true;
   DEBUG_PRINTLN(F("Switched UZG-01 to USB mode"));
   Serial.flush();
-  digitalWrite(MODE_SWITCH, 1);
+  // digitalWrite(MODE_SWITCH, 1);
   digitalWrite(LED_USB, 1);
 }
 
@@ -152,7 +152,7 @@ void adapterModeLAN()
   printLogMsg("Switched UZG-01 to LAN mode");
   _global_usb_mode = false;
   DEBUG_PRINTLN(F("Switched UZG-01 to LAN mode"));
-  digitalWrite(MODE_SWITCH, 0);
+  // digitalWrite(MODE_SWITCH, 0);
   digitalWrite(LED_USB, 0);
 }
 
