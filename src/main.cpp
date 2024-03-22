@@ -1100,9 +1100,11 @@ void loop(void){
   if (ConfigSettings.coordinator_mode == COORDINATOR_MODE_USB) {
     if(Serial2.available()) {
       Serial.write(Serial2.read());
+      Serial.flush();
     }
     if(Serial.available()) {
       Serial2.write(Serial.read());
+      Serial2.flush();
     }
     return;
   }
