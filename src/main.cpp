@@ -1098,11 +1098,11 @@ void loop(void){
   }
 
   if (ConfigSettings.coordinator_mode == COORDINATOR_MODE_USB) {
-    if(Serial1.available()) {
-      Serial.write(Serial1.read());
+    if(Serial2.available()) {
+      Serial.write(Serial2.read());
     }
     if(Serial.available()) {
-      Serial1.write(Serial.read());
+      Serial2.write(Serial.read());
     }
     return;
   }
