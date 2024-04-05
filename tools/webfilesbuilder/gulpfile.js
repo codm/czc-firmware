@@ -16,6 +16,7 @@ function stylesConcat() {
                 mode: 0666
             }
         }))
+        .pipe(gulp.dest('../../src/websrc/css/'))
         .pipe(gzip({
             append: true
         }))
@@ -93,7 +94,7 @@ function fontgz() {
 
 function fonts() {
     return gulp.src("../../src/websrc/gzipped/fonts/*.*")
-        .pipe(flatmap(function(stream, file) {B
+        .pipe(flatmap(function(stream, file) {
 			var filename = path.basename(file.path);
             var wstream = fs.createWriteStream("../../src/webh/" + filename + ".h");
             wstream.on("error", function(err) {
@@ -118,6 +119,7 @@ function fonts() {
 
 function imggz() {
 	return gulp.src("../../src/websrc/img/*.*")
+        .pipe(gulp.dest("../../src/websrc/img/"))
         .pipe(gzip({
             append: true
         }))
@@ -151,6 +153,7 @@ function imgs() {
 
 function htmlgz() {
 	return gulp.src("../../src/websrc/html/*.*")
+        .pipe(gulp.dest("../../src/websrc/html/"))
         .pipe(gzip({
             append: true
         }))

@@ -916,7 +916,7 @@ void setLedsDisable(bool mode, bool setup)
   DEBUG_PRINTLN(F("[setLedsDisable] done"));
 }
 
-void handlelongBtn() {
+void handleLongBtn() {
     if (!digitalRead(BTN)) {//long press
       DEBUG_PRINT(F("Long press "));
       DEBUG_PRINT(btnFlag);
@@ -1387,9 +1387,7 @@ void loop(void)
         socketClientDisconnected(cln);
       }
     }
-    // print to web console
-    printSendSocket(serial_bytes_read, serial_buf);
-    serial_bytes_read = 0;
+
     if (Serial2.available())
     {
       while (Serial2.available())
