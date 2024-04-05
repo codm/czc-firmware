@@ -1324,7 +1324,7 @@ DynamicJsonDocument getRootData() {
 
     float CPUtemp = getCPUtemp();
     doc["deviceTemp"] = String(CPUtemp);
-    doc["hwRev"] = deviceModel;
+    doc["hwRev"] = BOARD_DEVICE_MODEL_REV;
     doc["espModel"] = String(ESP.getChipModel());
     doc["espCores"] = String(ESP.getChipCores());
     doc["espFreq"] = String(ESP.getCpuFreqMHz());
@@ -1419,7 +1419,7 @@ DynamicJsonDocument getRootData() {
         char wifiSsidBuf[35];
         sprintf(wifiSsidBuf, "%s (no password)", apSsid);
         doc[wifiSsid] = wifiSsidBuf;
-        doc[wifiIp] = "192.168.1.1 (UZG-01 web interface)";
+        doc[wifiIp] = "192.168.1.1 (CZC 1.0 web interface)";
         doc[wifiSubnet] = "255.255.255.0 (Access point)";
         doc[wifiGate] = "192.168.1.1 (this device)";
         doc[wifiDhcp] = "On (Access point)";

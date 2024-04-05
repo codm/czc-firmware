@@ -14,7 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          ref: "czc" 
 
       - name: Install Node JS
         uses: actions/setup-node@v3
@@ -50,8 +52,8 @@ jobs:
           generate_release_notes: true
           name: "v${{ steps.get_version.outputs.version }} (${{ steps.date.outputs.date }})"
           files: |
-            bin/UZG-01.bin
-            bin/UZG-01_v${{ steps.get_version.outputs.version }}.full.bin
+            bin/CZC-1.0.bin
+            bin/CZC-1.0_v${{ steps.get_version.outputs.version }}.full.bin
 
       - name: Updare version in manifest.json
         run: |

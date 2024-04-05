@@ -31,4 +31,4 @@ void runEspUpdateFirmware(uint8_t *data, size_t len);
 
 void setClock();
 
-#define UPD_FILE "https://github.com/mercenaruss/uzg-firmware/releases/latest/download/UZG-01.bin"
+#define UPD_FILE "https://github.com/codm/czc-firmware/releases/latest/download/CZC-1.0.bin"

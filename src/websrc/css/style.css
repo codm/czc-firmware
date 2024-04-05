@@ -1,3 +1,49 @@
+:root {
+  --bs-primary: #212227;
+  --bs-primary-rgb: rgb(33, 34, 39);
+  --bs-secondary: #6c757d;
+  --bs-secondary-rgb:  108, 117, 125;
+  --bs-nav-link-hover-color: #ff7400;
+  --bs-link-hover-color: #ff7400;
+  --bs-nav-link-color: #212227;
+  --bs-link-color: #212227;
+}
+
+.btn-outline-primary {
+  --bs-btn-color:#212227;
+  --bs-btn-border-color: #212227;
+  --bs-btn-hover-border-color: #ff7400;
+  --bs-btn-hover-color: #ff7400;
+  --bs-btn-hover-bg: var(--bs-body-bg-rgb);
+}
+
+.btn-outline-green {
+  --bs-btn-color:#212227;
+  --bs-btn-border-color: #212227;
+  --bs-btn-hover-color: var(--bs-green);
+  --bs-btn-hover-bg: #dee2e6;
+  --bs-btn-hover-border-color: var(--bs-green);
+  --bs-btn-hover-bg: var(--bs-body-bg-rgb);
+}
+
+.btn-outline-red {
+  --bs-btn-color:#212227;
+  --bs-btn-border-color: #212227;
+  --bs-btn-hover-color: var(--bs-red);
+  --bs-btn-hover-bg: #dee2e6;
+  --bs-btn-hover-border-color: var(--bs-red);
+  --bs-btn-hover-bg: var(--bs-body-bg-rgb);
+}
+
+.btn-outline-yellow {
+  --bs-btn-color:#212227;
+  --bs-btn-border-color: #212227;
+  --bs-btn-hover-color: var(--bs-yellow);
+  --bs-btn-hover-bg: #dee2e6;
+  --bs-btn-hover-border-color: var(--bs-yellow);
+  --bs-btn-hover-bg: var(--bs-body-bg-rgb);
+}
+
 input.swFx{
   border: 1px solid rgba(0,0,0,.25) !important;
 }
@@ -80,12 +126,6 @@ label.swFx{
   z-index: 100;
 }
 
-.nav-shadow {
-  -webkit-box-shadow: 5px 0px 7px 0px rgba(0, 0, 0, 0.53);
-  -moz-box-shadow: 5px 0px 7px 0px rgba(0, 0, 0, 0.53);
-  box-shadow: 5px 0px 7px 0px rgba(0, 0, 0, 0.53);
-}
-
 .nav {
   width: 100%;
   white-space: nowrap;
@@ -110,10 +150,6 @@ label.swFx{
   padding-bottom: 20px;
 }
 
-.nav-active {
-  background-color: #0000003d;
-}
-
 .nav-item span {
   vertical-align: inherit;
 }
@@ -125,7 +161,6 @@ label.swFx{
 }
 
 .nav-item a {
-  border-bottom: white 1px solid !important;
   border-radius: 0 !important;
 }
 
@@ -137,21 +172,7 @@ label.swFx{
   padding: 0;
   border: 1px solid #ddd;
   line-height: 44px;
-  text-align: center;
-  display: block;
-  cursor: pointer;
-  width: 100%;
-  height: 44px;
-  border-radius: 4px;
-  margin: 10px auto;
-  font-size: 15px
-}
-
-#file-input_zb {
-  padding: 0;
-  border: 1px solid #ddd;
-  line-height: 44px;
-  text-align: center;
+  text-align: left;
   display: block;
   cursor: pointer;
   width: 100%;
@@ -167,32 +188,13 @@ label.swFx{
   border-radius: 10px
 }
 
-#bar_zb,
-#prgbar_zb {
-  background-color: #f1f1f1;
-  border-radius: 10px
-}
-
 #bar {
   background-color: #17a2b8;
   width: 0%;
   height: 10px
 }
 
-#bar_zb {
-  background-color: #17a2b8;
-  width: 0%;
-  height: 10px
-}
-
 form#upload_form {
-  background: #fff;
-  max-width: 408px;
-  border-radius: 5px;
-  text-align: center
-}
-
-form#upload_form_zb {
   background: #fff;
   max-width: 408px;
   border-radius: 5px;

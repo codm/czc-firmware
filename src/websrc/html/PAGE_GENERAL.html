@@ -25,7 +25,7 @@
                                             </label>
                                         </div>
                                         <!-- <hr class="border border-dark border-top"> -->
-                                        <div class="form-check">
+                                        <!-- <div class="form-check">
                                             <input data-replace="checkedUsbMode" class="form-check-input" type="radio"
                                                 name="coordMode" id="usbMode" value="2">
                                             <label class="form-check-label" for="usbMode">
@@ -41,7 +41,7 @@
                                         <div class="form-check form-check-inline ps-0">
                                             <button type="button" onclick="modalConstructor('keepWeb');"
                                                 class="btn btn-outline-primary btn-sm" style="height: 20%;">?</button>
-                                        </div>
+                                        </div>-->
                                     </div>
                                 </div>
                             </div>
@@ -53,15 +53,14 @@
                                             session (not saved on reboot):</span>
                                     </div>
                                     <div class="col-sm-12">
-                                        <button type='button' data-cmd="6"
-                                            class='btn btn-info col-sm-12 col-md-auto mb-1 me-1'>BLUE 💡 Toggle</button>
-                                        <button type="button" data-cmd="7"
-                                            class="btn btn-danger col-sm-12 col-md-auto mb-1 me-1">RED 💡
-                                            Toggle</button>
-                                        <button type="button" data-cmd="12"
-                                            class="btn btn-warning col-sm-12 col-md-auto mb-1 me-1">YELLOW 💡
-                                            Toggle</button>
-                                        <br>
+                                        <div class="row" style="display: flex; align-items: center; justify-content: center;">
+                                            <button type='button' data-cmd="6" class='btn btn-outline-green col-sm-12 col-md-auto mb-1 me-1'>Green 💡
+                                              Toggle</button>
+                                            <button type="button" data-cmd="7" class="btn btn-outline-red col-sm-12 col-md-auto mb-1 me-1">Red 💡
+                                              Toggle</button>
+                                            <button type="button" data-cmd="12" class="btn btn-outline-yellow col-sm-12 col-md-auto mb-1 me-1">Yellow 💡
+                                              Toggle</button>
+                                          </div>
                                     </div>
                                     <br>
 
@@ -74,14 +73,14 @@
                                             <input data-replace="checkedDisableLedPwr" class='form-check-input'
                                                 id='disableLedPwr' type='checkbox' role="switch" name='disableLedPwr'>
                                             <label class='form-check-label' for='disableLedPwr'>Disable Power LED
-                                                <span style="color: #047cc3">(BLUE)</span></spa< /label>
+                                                <span style="color: var(--bs-green)">(GREEN)</span></label>
                                         </div>
-                                        <div class='form-check form-switch'>
+                                        <!-- <div class='form-check form-switch'>
                                             <input data-replace="checkedDisableLedUSB" class='form-check-input'
                                                 id='disableLedUSB' type='checkbox' role="switch" name='disableLedUSB'>
                                             <label class='form-check-label' for='disableLedUSB'>Disable USB mode LED
                                                 <span style="color: #fc0500">(RED)</span></label>
-                                        </div>
+                                        </div>-->
                                     </div>
                                 </div>
                             </div>

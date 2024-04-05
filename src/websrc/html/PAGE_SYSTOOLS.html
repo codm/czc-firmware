@@ -69,7 +69,7 @@
                   class='btn btn-outline-primary col-sm-12 col-md-auto mb-1 me-1'>Router Reconnect</button>
               </div>
               <div class="row" style="display: flex; align-items: center; justify-content: center;">
-                <button type='button' data-cmd="3" class='btn btn-outline-warning col-sm-12 col-md-auto mb-1 me-1'>ESP32
+                <button type='button' data-cmd="3" class='btn btn-outline-primary col-sm-12 col-md-auto mb-1 me-1'>ESP32
                   Restart</button>
               </div>
             </div>
@@ -80,18 +80,18 @@
           <div class='card'>
             <div class='card-header'>Current session control</div>
             <div class='card-body'>
-              <div class="row" style="display: flex; align-items: center; justify-content: center;">
+              <!--<div class="row" style="display: flex; align-items: center; justify-content: center;">
                 <button type='button' data-cmd="4" class='btn btn-outline-primary col-sm-12 col-md-auto mb-1 me-1'>LAN
                   Mode ON</button>
                 <button type='button' data-cmd="5" class='btn btn-outline-primary col-sm-12 col-md-auto mb-1 me-1'>USB
                   Mode ON</button>
-              </div>
+              </div>-->
               <div class="row" style="display: flex; align-items: center; justify-content: center;">
-                <button type='button' data-cmd="6" class='btn btn-info col-sm-12 col-md-auto mb-1 me-1'>BLUE 💡
+                <button type='button' data-cmd="6" class='btn btn-outline-green col-sm-12 col-md-auto mb-1 me-1'>Green 💡
                   Toggle</button>
-                <button type="button" data-cmd="7" class="btn btn-danger col-sm-12 col-md-auto mb-1 me-1">RED 💡
+                <button type="button" data-cmd="7" class="btn btn-outline-red col-sm-12 col-md-auto mb-1 me-1">Red 💡
                   Toggle</button>
-                <button type="button" data-cmd="12" class="btn btn-warning col-sm-12 col-md-auto mb-1 me-1">YELLOW 💡
+                <button type="button" data-cmd="12" class="btn btn-outline-yellow col-sm-12 col-md-auto mb-1 me-1">Yellow 💡
                   Toggle</button>
               </div>
             </div>
@@ -183,7 +183,7 @@
               <form class="container" method='POST' action='#' enctype='multipart/form-data' id='upload_form'>
                 <input type='file' name='update' id='file' onchange='sub(this)' style=display:none accept='.bin'>
                 <label id='file-input' for='file'> Choose file...</label>
-                <input id="updButton" type='submit' class='btn btn-warning mb-2' value='ESP32 file update' disabled>
+                <input id="updButton" type='submit' class='btn btn-outline-primary mb-2' value='ESP32 file update' disabled>
                 <br>
                 <div class="container" style="max-width: 300px; margin-top: 30px;">
                   <div id='prg'></div>
@@ -194,11 +194,11 @@
                 <br>
                 <div class="container" style="max-width: 300px; margin-top: 15px;">
                   <div class="row">
-                    <button type="button" id="upd_esp_git" class="btn btn-warning col-sm-12 mb-2">Install latest from
+                    <button type="button" id="upd_esp_git" class="btn btn-outline-primary col-sm-12 mb-2">Install latest from
                       Github</button>
                   </div>
                   <div class="row">
-                    <button type="button" id="info_esp_git" class="btn btn-outline-warning col-sm-12 flsh_esp mb-2">Show
+                    <button type="button" id="info_esp_git" class="btn btn-outline-primary col-sm-12 flsh_esp mb-2">Show
                       verison info</button>
                   </div>
                 </div>

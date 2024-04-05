@@ -153,7 +153,7 @@ function generateConfig(params) {
 		case "z2m":
 			result = `# Serial settings
 serial:
-  # Location of CODM-Z2T 
+  # Location of CZC
   port: tcp://${ip}:${port}
   baudrate: ${$("#baud").val()}
   # Disable Zigbee (Y or W) led?
@@ -363,7 +363,7 @@ function apiGetPage(page, doneCall) {
 			});
 
 			$("[data-replace='pageName']").text(page.title);//update page name
-			$("title[data-replace='pageName']").text(page.title + " - CODM-Z2T Zigbee Ethernet POE USB Adapter");//update page title
+			$("title[data-replace='pageName']").text(page.title + " - CZC Zigbee Ethernet POE USB Adapter");//update page title
 
 			if (xhr.getResponseHeader("respValuesArr") === null) return;
 			console.log("[apiGetPage] starting parse values");

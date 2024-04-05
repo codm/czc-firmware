@@ -8,7 +8,7 @@ from glob import glob
 def after_build(source, target, env):
     
     shutil.copy(firmware_source, 'bin/firmware.bin')
-    for f in glob ('bin/UZG-01*.debug.bin'):
+    for f in glob ('bin/CZC-1.0*.debug.bin'):
         os.unlink (f)
 
     VERSION_FILE = 'tools/version'
@@ -19,7 +19,7 @@ def after_build(source, target, env):
         print('No version file found')
         VERSION_NUMBER = '0.0.0'
 
-    NEW_NAME = 'bin/UZG-01_v'+VERSION_NUMBER+'.debug.bin'
+    NEW_NAME = 'bin/CZC-1.0_v'+VERSION_NUMBER+'.debug.bin'
 
     shutil.move('bin/firmware.bin', NEW_NAME)
 
