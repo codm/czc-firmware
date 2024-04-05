@@ -1,14 +1,18 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
-#include <etc.h>
 #include <WiFi.h>
-#include "FS.h"
+#include <FS.h>
 #include <LittleFS.h>
 #include <ETH.h>
+
+#include <IntelHex.h>
+#include <CCTools.h>
+
 #include "config.h"
-#include "log.h"
 #include "web.h"
-#include "intelhex.h"
+#include "log.h"
+#include "etc.h"
+#include "zb.h"
 
 extern struct ConfigSettingsStruct ConfigSettings;
 extern struct zbVerStruct zbVer;
@@ -26,6 +30,10 @@ const byte cmdLedLen = 0x02;
 const byte zigLed1Off[] = {cmdFrameStart, cmdLedLen, cmdLed0, cmdLed1, cmdLedIndex, cmdLedStateOff, 0x2E}; // resp FE 01 67 0A 00 6C
 const byte zigLed1On[] = {cmdFrameStart, cmdLedLen, cmdLed0, cmdLed1, cmdLedIndex, cmdLedStateOn, 0x2F};
 const byte cmdLedResp[] = {0xFE, 0x01, 0x67, 0x0A, 0x00, 0x6C};
+
+size_t lastSize = 0;
+
+CCTools CCTool(Serial2, CC2652P_RST, CC2652P_FLASH);
 
 void clearS2Buffer()
 {
@@ -75,8 +83,8 @@ void getZbVer()
 
 void zbCheck()
 {
-
-    // Serial2.begin(115200, SERIAL_8N1, CC2652P_RXD, CC2652P_TXD); //start zigbee serial
+    // getZbChip();
+    //  Serial2.begin(115200, SERIAL_8N1, CC2652P_RXD, CC2652P_TXD); //start zigbee serial
     bool respOk = false;
     for (uint8_t i = 0; i < 12; i++)
     { // wait for zigbee start
@@ -182,47 +190,55 @@ void zbLedToggle()
     }
 }
 
+/*
 void getZbChip()
 {
     zigbeeEnableBSL();
     const byte cmdChipID[] = {0x03, 0x28, 0x28};
     for (uint8_t i = 0; i < 6; i++)
     {
-        // if (Serial2.read() != cmdFrameStart || Serial2.read() != 0x0a || Serial2.read() != 0x61 || Serial2.read() != cmd2){//check for packet start
-        clearS2Buffer(); // skip
-        Serial2.write(cmdChipID, sizeof(cmdChipID));
-        Serial2.flush();
-        delay(300);
-        //}else{
-        const uint8_t zbChipLen = 20;
-        byte zbChipBuf[zbChipLen];
-        for (uint8_t i = 0; i < zbChipLen; i++)
-        {
-            zbChipBuf[i] = Serial2.read();
-            printLogMsg(String("[zbChipBuf]") + zbChipBuf[i]);
+        if (Serial2.read() != 0x03 || Serial2.read() != 0x0a || Serial2.read() != 0x61 || Serial2.read() != 0x28)
+        {                    // check for packet start
+            clearS2Buffer(); // skip
+            Serial2.write(cmdChipID, sizeof(cmdChipID));
+            Serial2.flush();
+            delay(400);
         }
-        uint32_t zbChipID = (zbChipBuf[2] << 8) | zbChipBuf[3];
-        // zbVer.zbRev =  zbVerBuf[5] | (zbVerBuf[6] << 8) | (zbVerBuf[7] << 16) | (zbVerBuf[8] << 24);
+        else
+        {
+            const uint8_t zbChipLen = 20;
+            byte zbChipBuf[zbChipLen];
+            for (uint8_t i = 0; i < zbChipLen; i++)
+            {
 
-        printLogMsg(String("[ZB_Chip_ID]") + zbChipID);
+                zbChipBuf[i] = Serial2.read();
+                printLogMsg(String("[zbChipBuf]") + zbChipBuf[i]);
+            }
+            // uint32_t zbChipID = (zbChipBuf[2] << 8) | zbChipBuf[3];
 
-        clearS2Buffer();
-        // break;
-        //}
+            // zbVer.zbRev =  zbVerBuf[5] | (zbVerBuf[6] << 8) | (zbVerBuf[7] << 16) | (zbVerBuf[8] << 24);
+
+            // printLogMsg(String("[ZB_Chip_ID]") + zbChipID);
+
+            clearS2Buffer();
+            break;
+            }
+        }
+        zigbeeRestart();
     }
-}
+*/
 
 void preParse()
 {
-    DEBUG_PRINTLN("Starting the parsing process");
+    DEBUG_PRINTLN(String(millis()) + " Starting the parsing process");
 }
 
 void postParse()
 {
-    DEBUG_PRINTLN("Parsing complete");
+    DEBUG_PRINTLN(String(millis()) + " Parsing complete");
 }
 
-void parseCallback(uint32_t address, uint8_t len, uint8_t *data)
+void parseCallback(uint32_t address, uint8_t len, uint8_t *data, size_t currentPosition, size_t _totalSize)
 {
     // DEBUG_PRINT(".");
 
@@ -239,38 +255,129 @@ void parseCallback(uint32_t address, uint8_t len, uint8_t *data)
         DEBUG_PRINT(" ");
     }
     DEBUG_PRINTLN(""); */
+
+    if (currentPosition - lastSize > 12500)
+    {
+        lastSize = currentPosition;
+        const char *tagZB_FW_progress = "ZB_FW_prgs";
+        const uint8_t eventLen = 11;
+
+        float percent = ((float)currentPosition / _totalSize) * 100.0;
+
+        sendEvent(tagZB_FW_progress, eventLen, String(percent));
+        DEBUG_PRINTLN(String(tagZB_FW_progress) + String(" | ") + String(percent) + String("%"));
+    }
+    // sendEvent(tagESP_FW_progress, eventLen, String(percent));
+}
+
+void runFlash()
+{
+    CCTools CCTools(Serial2, CC2652P_RST, CC2652P_FLASH);
+
+    if (CCTool.begin())
+    {
+        CCTool.eraseFlash();
+        printLogMsg(String("[ZB_FLASH] | Chip erased"));
+        // zigbeeRestart();
+    }
+    else
+    {
+        String msg = "No connection with Zigbee";
+        printLogMsg(String("[ZBCHIP] ") + msg);
+        DEBUG_PRINTLN(msg);
+    }
 }
 
 void checkFwHex(const char *tempFile) // check Zigbee FW file using IntelHEX, than check BSL pin.
 {
     IntelHex zb_hex(tempFile);
 
+    // zb_hex.validateChecksum();
+    // zb_hex.checkBSLConfiguration();
+
     if (!zb_hex.parse(preParse, parseCallback, postParse))
     {
-        DEBUG_PRINTLN("Failed to parse the zb_hex HEX file. Corrupted file");
+        String msg = ("Failed to parse the zb_hex HEX file. Corrupted file");
+        DEBUG_PRINTLN(msg);
+        printLogMsg(msg);
     }
 
     if (!zb_hex.fileParsed())
     {
-        DEBUG_PRINTLN("File not good");
+        String msg = ("File not good");
+        DEBUG_PRINTLN(msg);
+        printLogMsg(msg);
     }
+
+    u_int8_t local_chip_id = ALL_CHIP_ID;
+    if (zbVer.chipID == "CC2652P7")
+        local_chip_id = P7_CHIP_ID;
 
     if (zb_hex.bslActive())
     {
-        DEBUG_PRINTLN("BSL (" + String(zb_hex.bslAddr() ? "P7 and R7 chips" : "All chips") + ") pin " + String(zb_hex.bslPin()) + " level " + String(zb_hex.bslLevel() ? "HIGH" : "LOW"));
-        if (zb_hex.bslAddr() == ALL_CHIP_ID && zb_hex.bslPin() == BSL_PIN && zb_hex.bslLevel() == BSL_LEVEL) // All series DIO 15 LOW
+        String msg = "BSL (" + String(zb_hex.bslAddr() ? "P7 and R7 chips" : "All chips") + ") pin " + String(zb_hex.bslPin()) + " level " + String(zb_hex.bslLevel() ? "HIGH" : "LOW");
+        DEBUG_PRINTLN(msg);
+        printLogMsg(msg);
+
+        if (zb_hex.bslAddr() == local_chip_id && zb_hex.bslPin() == NEED_BSL_PIN && zb_hex.bslLevel() == NEED_BSL_LEVEL) // All series DIO 15 LOW
         {
             zb_hex.setFileValidated(true);
-            DEBUG_PRINTLN("BSL config is right!");
+            String msg = ("BSL config OK");
+            DEBUG_PRINTLN(msg);
+            printLogMsg(msg);
+        }
+        else
+        {
+            String msg = ("BSL config incorect. Wrong chip, pin or level.");
+            DEBUG_PRINTLN(msg);
+            printLogMsg(msg);
         }
     }
     else
     {
-        DEBUG_PRINTLN("BSL config error. Range not found or CCFG incorrect.");
+        String msg = ("BSL config error. Range not found or CCFG incorrect.");
+        DEBUG_PRINTLN(msg);
+        printLogMsg(msg);
     }
 
     if (!zb_hex.fileValidated())
     {
-        DEBUG_PRINTLN("BSL config incorect. Wrong chip, pin or level.");
+        String msg = ("Zigbee FW file INVALID - ERROR");
+        DEBUG_PRINTLN(msg);
+        printLogMsg(msg);
+    }
+    else
+    {
+        String msg = ("Zigbee FW file VALID - OK");
+        DEBUG_PRINTLN(msg);
+        printLogMsg(msg);
+        runFlash();
+    }
+}
+
+void zbInit()
+{
+
+    // zbCheck();
+    // getZbVer();
+    if (CCTool.begin())
+    {
+
+        // CCTool.cmdGetChipId();
+        String zb_chip = CCTool.detectChipInfo();
+        DEBUG_PRINTLN(zb_chip);
+        printLogMsg(String("[ZBCHIP] ") + zb_chip);
+        zbVer.chipID = zb_chip;
+        // zigbeeRestart();
+        CCTool.restart();
+        // delay(5000);
+
+        // getZbVer();
+    }
+    else
+    {
+        String msg = "No connection with Zigbee";
+        printLogMsg(String("[ZBCHIP] ") + msg);
+        DEBUG_PRINTLN(msg);
     }
 }
