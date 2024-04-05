@@ -390,12 +390,22 @@ bool loadConfigGeneral(){
   File configFile = LittleFS.open(configFileGeneral, FILE_READ);
   DEBUG_PRINTLN(configFile.readString());
   if (!configFile){
-    //String deviceID = deviceModel;
-    //getDeviceID(deviceID);
+#if BUILD_ENV_NAME == codm-v1-debug || BUILD_ENV_NAME == codm-v1-prod
+    char deviceID[16];
+    strcpy(deviceID, deviceModel);
+    getDeviceID(deviceID);
+#endif
     DEBUG_PRINTLN("RESET ConfigGeneral");
     //String StringConfig = "{\"hostname\":\"" + deviceID + "\",\"disableLeds\": false,\"refreshLogs\":1000,\"usbMode\":0,\"disableLedPwr\":0,\"disableLedUSB\":0,\""+ coordMode +"\":0}\""+ prevCoordMode +"\":0, \"keepWeb\": 0}";
     DynamicJsonDocument doc(1024);
+#if BUILD_ENV_NAME == codm-v1-debug || BUILD_ENV_NAME == codm-v1-prod
+    char deviceId[32];
+    strcpy(deviceId, deviceModel);
+    getDeviceID(deviceId);
+    doc[hostname] = deviceId;
+#else
     doc[hostname] = deviceModel;
+#endif
     doc[disableLeds] = 0;
     doc[refreshLogs] = 1000;
     doc[disableLedPwr] = 0;
