@@ -463,17 +463,11 @@ bool loadConfigGeneral()
   File configFile = LittleFS.open(configFileGeneral, FILE_READ);
   DEBUG_PRINTLN(configFile.readString());
   if (!configFile){
-#if BUILD_ENV_NAME == codm-v1-debug || BUILD_ENV_NAME == codm-v1-prod
-    char deviceID[16];
-    strcpy(deviceID, deviceModel);
-    getDeviceID(deviceID);
-#endif
     DEBUG_PRINTLN("RESET ConfigGeneral");
     // String StringConfig = "{\"hostname\":\"" + deviceID + "\",\"disableLeds\": false,\"refreshLogs\":1000,\"usbMode\":0,\"disableLedPwr\":0,\"disableLedUSB\":0,\""+ coordMode +"\":0}\""+ prevCoordMode +"\":0, \"keepWeb\": 0}";
     DynamicJsonDocument doc(1024);
 #if BUILD_ENV_NAME == codm-v1-debug || BUILD_ENV_NAME == codm-v1-prod
-    char deviceId[32];
-    strcpy(deviceId, deviceModel);
+    char deviceId[20];
     getDeviceID(deviceId);
     doc[hostname] = deviceId;
 #else
@@ -832,9 +826,9 @@ void connectWifi()
 
 void mDNS_start()
 {
-  const char* host = BOARD_MDNS_HOST;
-  const char* http = "_http";
-  const char* tcp = "_tcp";
+  const char *host = BOARD_MDNS_HOST;
+  const char *http = "_http";
+  const char *tcp = "_tcp";
   if (!MDNS.begin(ConfigSettings.hostname))
   {
     printLogMsg("Error setting up MDNS responder!");
@@ -916,40 +910,49 @@ void setLedsDisable(bool mode, bool setup)
   DEBUG_PRINTLN(F("[setLedsDisable] done"));
 }
 
-void handleLongBtn() {
-    if (!digitalRead(BTN)) {//long press
-      DEBUG_PRINT(F("Long press "));
-      DEBUG_PRINT(btnFlag);
-      DEBUG_PRINTLN(F("s"));
-      if (btnFlag >= 4) {
-        printLogMsg("Long press 4sec - zigbeeEnableBSL");
-        zigbeeEnableBSL();
-        if (_global_usb_mode) {
-          digitalWrite(LED_USB, 0);
-          delay(1000);
-        }
-        digitalWrite(LED_USB, 1);
-        delay(1000);
+void handleLongBtn()
+{
+  if (!digitalRead(BTN))
+  { // long press
+    DEBUG_PRINT(F("Long press "));
+    DEBUG_PRINT(btnFlag);
+    DEBUG_PRINTLN(F("s"));
+    if (btnFlag >= 4)
+    {
+      printLogMsg("Long press 4sec - zigbeeEnableBSL");
+      zigbeeEnableBSL();
+      if (_global_usb_mode)
+      {
         digitalWrite(LED_USB, 0);
         delay(1000);
-        digitalWrite(LED_USB, 1);
-        if (!_global_usb_mode) {
-          delay(1000);
-          digitalWrite(LED_USB, 0);
-        }
-        tmrBtnLongPress.stop();
-        btnFlag = false;
       }
-      else btnFlag++;
-    } else { //stop long press
-        if (btnFlag >= 2) {
-          printLogMsg("Long press 2sec - setLedsDisable");
-          setLedsDisable(!ConfigSettings.disableLeds, false);
-        }
-        tmrBtnLongPress.stop();
-        btnFlag = false;
-        printLogMsg("Stop long press");
+      digitalWrite(LED_USB, 1);
+      delay(1000);
+      digitalWrite(LED_USB, 0);
+      delay(1000);
+      digitalWrite(LED_USB, 1);
+      if (!_global_usb_mode)
+      {
+        delay(1000);
+        digitalWrite(LED_USB, 0);
+      }
+      tmrBtnLongPress.stop();
+      btnFlag = false;
     }
+    else
+      btnFlag++;
+  }
+  else
+  { // stop long press
+    if (btnFlag >= 2)
+    {
+      printLogMsg("Long press 2sec - setLedsDisable");
+      setLedsDisable(!ConfigSettings.disableLeds, false);
+    }
+    tmrBtnLongPress.stop();
+    btnFlag = false;
+    printLogMsg("Stop long press");
+  }
 }
 
 void toggleUsbMode()
