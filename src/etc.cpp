@@ -159,46 +159,9 @@ void ledUSBToggle()
 
 void getDeviceID(char *arr)
 {
-  uint64_t mac = ESP.getEfuseMac();
-  uint8_t a;
-  uint8_t b;
-  a ^= mac >> 8 * 0;
-  a ^= mac >> 8 * 1;
-  a ^= mac >> 8 * 2;
-  a ^= mac >> 8 * 3;
-  b ^= mac >> 8 * 4;
-  b ^= mac >> 8 * 5;
-  b ^= mac >> 8 * 6;
-  b ^= mac >> 8 * 7;
-
-  char buf[20];
-
-  if (a < 16)
-  {
-    sprintf(buf, "0%x", a);
-  }
-  else
-  {
-    sprintf(buf, "%x", a);
-  }
-
-  if (b < 16)
-  {
-    sprintf(buf, "%s0%x", buf, b);
-  }
-  else
-  {
-    sprintf(buf, "%s%x", buf, b);
-  }
-
-  for (uint8_t cnt = 0; cnt < strlen(buf); cnt++)
-  {
-    buf[cnt] = toupper(buf[cnt]);
-  }
-
-  // char buf[20];
-  sprintf(arr, "%s-%s", deviceModel, buf);
-  // arr = buf;
+  uint8_t mac[6];
+  esp_efuse_mac_get_default(mac);
+  sprintf(arr, "%s-%02X%02X", BOARD_DEVICE_MODEL, mac[4], mac[5]);
 }
 
 // void writeDefaultConfig(const char *path, String StringConfig)
@@ -316,7 +279,7 @@ void setClock()
   DEBUG_PRINT(F("Current GMT time: "));
   DEBUG_PRINT(asctime(&timeinfo));
 
-  char *zoneToFind = const_cast<char *>("Europe/Kiev");
+  char *zoneToFind = const_cast<char *>("Europe/Berlin");
   if (ConfigSettings.timeZone)
   {
     zoneToFind = ConfigSettings.timeZone;

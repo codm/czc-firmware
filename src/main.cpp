@@ -520,7 +520,7 @@ bool loadConfigGeneral()
   // DEBUG_PRINTLN(F("[loadConfigGeneral] disableLeds"));
   ConfigSettings.keepWeb = (uint8_t)doc[keepWeb];
   // DEBUG_PRINTLN(F("[loadConfigGeneral] disableLeds"));
-  strlcpy(ConfigSettings.timeZone, doc[timeZoneName] | "", sizeof(ConfigSettings.timeZone));
+  strlcpy(ConfigSettings.timeZone, doc[timeZoneName] | "Europe/Berlin", sizeof(ConfigSettings.timeZone));
   configFile.close();
   DEBUG_PRINTLN(F("[loadConfigGeneral] config load done"));
   return true;

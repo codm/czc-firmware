@@ -157,8 +157,6 @@ serial:
   # Location of CZC
   port: tcp://${ip}:${port}
   baudrate: ${$("#baud").val()}
-  # Disable Zigbee (Y or W) led?
-  disable_led: false
 # Set output power to max 20
 advanced:
   transmit_power: 20`;
@@ -168,10 +166,8 @@ advanced:
 # List USB devices on Linux: ls  /dev/ttyUSB*
 serial:
 # Location of CODM-Z2T 
-  port: INSERT_DEVICE_PATCH_HERE
+  port: INSERT_DEVICE_PATH_HERE
   baudrate: ${$("#baud").val()}
-# Disable green led?
-  disable_led: false
 # Set output power to max 20
 advanced:
   transmit_power: 20`;
