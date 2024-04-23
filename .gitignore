@@ -1,12 +1,14 @@
-.DS_Store
+**/.DS_Store
 .pio
 .vscode
 .gcc-flags.json
 .clang_complete
-commit
+commit*
 test.html
 gzipped
 webh
 *.code-workspace
 logs
 todo
+!lib
+!platformio.ini

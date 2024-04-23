@@ -16,7 +16,7 @@
 #define ETH_MDIO_PIN_1 18
 // ESP32 PINS TO CONTROL CC2652P
 #define CC2652P_RST 16
-#define CC2652P_FLSH 32
+#define CC2652P_FLASH 32
 #define CC2652P_RXD 36 //seen from ESP
 #define CC2652P_TXD 4 //seen from ESP
 #define BTN 35
@@ -27,7 +27,7 @@
 #define FORMAT_LITTLEFS_IF_FAILED true
 #define BOARD_DEVICE_MODEL "CZC"
 #define BOARD_DEVICE_MODEL_REV "CZC v1.0"
-#define BOARD_MDNS_HOST "_czc-01"
+#define BOARD_MDNS_HOST "_czc"
 #else
 //ESP32 PINS TO CONTROL LAN8720
 #define ETH_CLK_MODE_1 ETH_CLOCK_GPIO17_OUT
@@ -39,30 +39,29 @@
 #define ETH_MDIO_PIN_1 18
 //ESP32 PINS TO CONTROL CC2652P
 #define CC2652P_RST 16
-#define CC2652P_FLSH 32
+#define CC2652P_FLASH 32
 #define CC2652P_RXD 36
 #define CC2652P_TXD 4
 #define BTN 35
 #define MODE_SWITCH 33
 #define DEBOUNCE_TIME 70
-#define PRODUCTION 1
+
 #define TCP_LISTEN_PORT 9999
 #define FORMAT_LITTLEFS_IF_FAILED true
 #define BOARD_DEVICE_MODEL "UZG-01"
+#define BOARD_DEVICE_MODEL_REV "UZG-01"
 #define BOARD_MDNS_HOST "_uzg-01"
 #endif
 
 
-
-// CC2652 settings
-#define BSL_PIN 15 // CC2652 pin number
-#define BSL_LEVEL 0 //0-LOW 1-HIGH
-
+// CC2652 settings (FOR BSL VALIDATION!)
+#define NEED_BSL_PIN 15  // CC2652 pin number (FOR BSL VALIDATION!)
+#define NEED_BSL_LEVEL 0 // 0-LOW 1-HIGH
 
 const int16_t overseerInterval = 5 * 1000; // check lan or wifi connection every 5sec
-const uint8_t overseerMaxRetry = 3;         // 5x12 = 60sec delay for AP start
-const uint8_t LED_USB = 12;                 // RED
-const uint8_t LED_PWR = 14;                 // BLUE
+const uint8_t overseerMaxRetry = 3;        // 5x12 = 60sec delay for AP start
+const uint8_t LED_USB = 12;                // RED
+const uint8_t LED_PWR = 14;                // BLUE
 const uint8_t MAX_SOCKET_CLIENTS = 5;
 
 enum COORDINATOR_MODE_t : uint8_t
@@ -72,12 +71,17 @@ enum COORDINATOR_MODE_t : uint8_t
   COORDINATOR_MODE_USB
 };
 
-// struct JsonConsts_t{
-//   char* str;
-// };
-// JsonConsts_t JsonConsts {
-//   "sadasd"
-// };
+extern const char *coordMode;// coordMode node name
+extern const char *prevCoordMode;// prevCoordMode node name
+extern const char *configFileSystem;
+extern const char *configFileWifi;
+extern const char *configFileEther;
+extern const char *configFileGeneral;
+extern const char *configFileSecurity;
+extern const char *configFileSerial;
+extern const char *configFileMqtt;
+extern const char *configFileWg;
+extern const char *deviceModel;
 
 struct ConfigSettingsStruct
 {
@@ -115,28 +119,48 @@ struct ConfigSettingsStruct
   bool wifiWebSetupInProgress;
   bool fwEnabled;
   IPAddress fwIp;
-  bool mqttEnable;
-  char mqttServer[50];
-  IPAddress mqttServerIP;
-  int mqttPort;
-  char mqttUser[50];
-  char mqttPass[50];
-  char mqttTopic[50];
-  // bool mqttRetain;
-  int mqttInterval;
-  bool mqttDiscovery;
-  unsigned long mqttReconnectTime;
-  unsigned long mqttHeartbeatTime;
+
   bool zbLedState;
   bool zbFlashing;
+  char timeZone[50];
 };
 
+struct MqttSettingsStruct
+{
+  bool enable;
+  char server[50];
+  IPAddress serverIP;
+  int port;
+  char user[50];
+  char pass[50];
+  char topic[50];
+  // bool retain;
+  int interval;
+  bool discovery;
+  unsigned long reconnectTime;
+  unsigned long heartbeatTime;
+};
+
+struct WgSettingsStruct
+{
+  bool enable;
+  bool init = 0;
+  char localAddr[20];
+  IPAddress localIP;
+  char localPrivKey[45];
+  char endAddr[45];
+  char endPubKey[45];
+  int endPort;
+};
+
+/*
 struct InfosStruct
 {
   char device[8];
   char mac[8];
   char flash[8];
 };
+*/
 
 struct zbVerStruct
 {
@@ -146,6 +170,7 @@ struct zbVerStruct
   uint8_t majorrel;
   uint8_t product;
   uint8_t transportrev;
+  String chipID;
 };
 
 typedef CircularBuffer<char, 8024> LogConsoleType;

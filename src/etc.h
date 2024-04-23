@@ -28,10 +28,15 @@ void ledPowerToggle();
 void ledUSBToggle();
 
 void getDeviceID(char * arr);
-void writeDefultConfig(const char *path, DynamicJsonDocument& doc);
+void writeDefaultConfig(const char *path, DynamicJsonDocument& doc);
 
 void resetSettings();
 
 String hexToDec(String hexString);
+
+void setClock();
+void setTimezone(String timezone);
+const char* getGmtOffsetForZone(const char* zone);
+void ledsScheduler ();
 
 //#define min(a, b) ((a) < (b) ? (a) : (b))

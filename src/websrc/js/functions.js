@@ -25,7 +25,8 @@ const pages = {
 	API_PAGE_SECURITY: { num: 5, str: "/security", title: "Security" },
 	API_PAGE_SYSTOOLS: { num: 6, str: "/sys-tools", title: "System and Tools" },
 	API_PAGE_ABOUT: { num: 7, str: "/about", title: "About" },
-	API_PAGE_MQTT: { num: 8, str: "/mqtt", title: "Config MQTT" }
+	API_PAGE_MQTT: { num: 8, str: "/mqtt", title: "Config MQTT" },
+	API_PAGE_WG: { num: 9, str: "/wg", title: "Config WireGuard" }
 }
 
 const api = {
@@ -156,8 +157,6 @@ serial:
   # Location of CZC
   port: tcp://${ip}:${port}
   baudrate: ${$("#baud").val()}
-  # Disable Zigbee (Y or W) led?
-  disable_led: false
 # Set output power to max 20
 advanced:
   transmit_power: 20`;
@@ -167,10 +166,8 @@ advanced:
 # List USB devices on Linux: ls  /dev/ttyUSB*
 serial:
 # Location of CODM-Z2T 
-  port: INSERT_DEVICE_PATCH_HERE
+  port: INSERT_DEVICE_PATH_HERE
   baudrate: ${$("#baud").val()}
-# Disable green led?
-  disable_led: false
 # Set output power to max 20
 advanced:
   transmit_power: 20`;
@@ -224,6 +221,13 @@ function loadPage(url) {
 			apiGetPage(api.pages.API_PAGE_MQTT, () => {
 				if ($("#MqttEnable").prop("checked") == false) {
 					MqttInputDsbl(true);
+				}
+			});
+			break;
+		case api.pages.API_PAGE_WG.str:
+			apiGetPage(api.pages.API_PAGE_WG, () => {
+				if ($("#WgEnable").prop("checked") == false) {
+					WgInputDsbl(true);
 				}
 			});
 			break;
@@ -368,11 +372,29 @@ function apiGetPage(page, doneCall) {
 			if (xhr.getResponseHeader("respValuesArr") === null) return;
 			console.log("[apiGetPage] starting parse values");
 			const values = JSON.parse(xhr.getResponseHeader("respValuesArr"));
+			let selectedTimeZone = null;
 			for (const property in values) {
+				if (property === "timeZoneName") {
+					selectedTimeZone = values[property];
+					console.error(selectedTimeZone);
+					console.error("timeZoneName");
+					continue;
+				}
 				$("[data-replace='" + property + "']").map(function () {
 					const elemType = $(this).prop('nodeName').toLowerCase();
+					let valueToSet = values[property];
+
+					const isIpValue = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(valueToSet);
+					const isMaskInPropertyName = property.toLowerCase().includes('mask');
+
+					if (isIpValue && !isMaskInPropertyName) {
+						valueToSet = '<a href="http://' + valueToSet + '">' + valueToSet + '</a>';
+					}
+
 					switch (elemType) {
-						case "input" || "select" || "textarea":
+						case "input":
+						case "select":
+						case "textarea":
 							const type = $(this).prop('type').toLowerCase();
 							if (elemType == "input" && (type == "checkbox" || type == "radio")) {
 								$(this).prop("checked", values[property]);
@@ -383,13 +405,35 @@ function apiGetPage(page, doneCall) {
 						case "option":
 							$(this).prop("selected", true);
 							break;
-
 						default:
-							$(this).text(values[property]);
+							if (isIpValue && !isMaskInPropertyName) {
+								$(this).html(valueToSet);
+							} else {
+								$(this).text(valueToSet);
+							}
 							break;
 					}
 				});
 			}
+
+			if (xhr.getResponseHeader("respTimeZones") !== null) {
+				const zones = JSON.parse(xhr.getResponseHeader("respTimeZones"));
+				const $dropdown = $("#timeZoneId");
+				$dropdown.empty();
+
+				if (Array.isArray(zones)) {
+					zones.forEach(item => {
+						let option = new Option(item, item);
+						if (item === selectedTimeZone) {
+							option.selected = true;
+						}
+						$dropdown.append(option);
+					});
+				} else {
+					console.error("zones is not an array");
+				}
+			}
+
 			if (typeof (locCall) == "function") locCall();//callback
 		}
 	});
@@ -501,6 +545,46 @@ function ESPfwStartEvents() {
 				$('#prg').html('Update completed!<br>Rebooting!');
 				//window.location.href = '/';
 				rebootWait();
+			}, 250);
+		}
+		//const data = e.data.replaceAll("`", "<br>");
+		//$(modalBtns).html("");
+		//$("#zbFlshPgsTxt").html(data);
+		//$(".progress").addClass(classHide);
+		//$(modalBody).html(e.data).css("color", "red");
+		//modalAddClose();
+
+
+	}, false);
+}
+
+function ZBfwStartEvents() {
+	var source = new EventSource('/events');
+	console.log("Events try");
+
+	source.addEventListener('open', function (e) {
+		console.log("Events Connected");
+	}, false);
+
+	source.addEventListener('error', function (e) {
+		if (e.target.readyState != EventSource.OPEN) {
+			console.log("Events Err");
+		}
+	}, false);
+
+	source.addEventListener('ZB_FW_prgs', function (e) {
+
+		const val = e.data + "%";
+		console.log(val);
+
+		$('#prg_zb').html('validate: ' + Math.round(e.data) + '%');
+		$('#bar_zb').css('width', Math.round(e.data) + '%');
+
+		if (Math.round(e.data) > 99.5) {
+			setTimeout(function () {
+				$('#prg_zb').html('Validate complete!');
+				//window.location.href = '/';
+				//rebootWait();
 			}, 250);
 		}
 		//const data = e.data.replaceAll("`", "<br>");
@@ -1064,6 +1148,15 @@ function MqttInputDsbl(state) {
 	$("#MqttInterval").prop(disbl, state);
 	$("#MqttDiscovery").prop(disbl, state);
 	$('#div_show4').toggle(this.checked);
+}
+
+function WgInputDsbl(state) {
+	$("#WgLocalAddr").prop(disbl, state);
+	$("#WgLocalPrivKey").prop(disbl, state);
+	$("#WgEndAddr").prop(disbl, state);
+	$("#WgEndPubKey").prop(disbl, state);
+	$("#WgEndPort").prop(disbl, state);
+	$('#div_show5').toggle(this.checked);
 }
 
 function SeqInputDsbl(state) {
