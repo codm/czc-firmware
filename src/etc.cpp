@@ -159,9 +159,12 @@ void ledUSBToggle()
 
 void getDeviceID(char *arr)
 {
-  uint8_t mac[6];
-  esp_efuse_mac_get_default(mac);
-  sprintf(arr, "%s-%02X%02X", BOARD_DEVICE_MODEL, mac[4], mac[5]);
+  String mac = ETH.macAddress();
+  int last = mac.lastIndexOf(':');
+  String last_str = mac.substring(last + 1, last + 3);
+  int pre_last = last - 3;
+  String pre_last_str = mac.substring(pre_last + 1, pre_last + 3);
+  sprintf(arr, "%s-%s%s", BOARD_DEVICE_MODEL, pre_last_str, last_str);
 }
 
 // void writeDefaultConfig(const char *path, String StringConfig)

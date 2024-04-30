@@ -1337,6 +1337,9 @@ DynamicJsonDocument getRootData()
     const char *no = "No";
     const char *on = "On";
     const char *off = "Off";
+    const char *hostname = "hostname";
+
+    doc[hostname] = ConfigSettings.hostname;
 
     if (ConfigSettings.connectedClients > 0)
     {

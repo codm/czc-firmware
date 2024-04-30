@@ -465,6 +465,7 @@ bool loadConfigGeneral()
   if (!configFile){
     DEBUG_PRINTLN("RESET ConfigGeneral");
     // String StringConfig = "{\"hostname\":\"" + deviceID + "\",\"disableLeds\": false,\"refreshLogs\":1000,\"usbMode\":0,\"disableLedPwr\":0,\"disableLedUSB\":0,\""+ coordMode +"\":0}\""+ prevCoordMode +"\":0, \"keepWeb\": 0}";
+    ETH.begin(ETH_ADDR_1, ETH_POWER_PIN_1, ETH_MDC_PIN_1, ETH_MDIO_PIN_1, ETH_TYPE_1, ETH_CLK_MODE_1, ETH_POWER_PIN_ALTERNATIVE_1);
     DynamicJsonDocument doc(1024);
 #if BUILD_ENV_NAME == codm-v1-debug || BUILD_ENV_NAME == codm-v1-prod
     char deviceId[20];
@@ -481,6 +482,8 @@ bool loadConfigGeneral()
     doc[prevCoordMode] = 0;
     doc[keepWeb] = 0;
     writeDefaultConfig(configFileGeneral, doc);
+    DEBUG_PRINTLN("Wrote default general config, restarting.");
+    ESP.restart();
   }
 
   configFile = LittleFS.open(configFileGeneral, FILE_READ);
