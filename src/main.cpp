@@ -1070,8 +1070,7 @@ void setup()
   digitalWrite(LED_PWR, 1);
   digitalWrite(LED_USB, 1);
 
-// hard reset
-#if BUILD_ENV_NAME != debug
+  // hard reset
   if (!digitalRead(BTN))
   {
     DEBUG_PRINTLN(F("[hard reset] Entering hard reset mode"));
@@ -1086,12 +1085,11 @@ void setup()
       {
         counter++;
         DEBUG_PRINTLN(counter);
-        delay(200);
+        delay(1000);
       }
     }
     DEBUG_PRINTLN(F("[hard reset] Btn up, exit"));
   }
-#endif
   //--------------------
 
   // zig connection & leds testing
