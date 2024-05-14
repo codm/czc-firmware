@@ -1,12 +1,12 @@
 {
     "name": "CZC-FW",
-    "version": "v0.2.6",
+    "version": "v1.0.0",
     "builds": [
       {
         "chipFamily": "ESP32",
         "improv": false,
         "parts": [
-          { "path": "bin/CZC-1.0_v0.2.6.full.bin", "offset": 0 }
+          { "path": "bin/CZC-1.0_v1.0.0.full.bin", "offset": 0 }
         ]
       }
     ]
