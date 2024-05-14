@@ -184,7 +184,7 @@
             <div class='card-header'>ESP32 update</div>
             <div class='card-body'>
               <form class="container" method='POST' action='#' enctype='multipart/form-data' id='upload_form'>
-                <input type='file' name='update' id='file' onchange='sub(this)' style=display:none accept='.bin'>
+                <input type='file' name='update' id='file' onchange='sub()' style=display:none accept='.bin'>
                 <label id='file-input' for='file'> Choose file...</label>
                 <input id="updButton" type='submit' class='btn btn-outline-primary mb-2' value='ESP32 file update' disabled>
                 <br>
@@ -217,7 +217,7 @@
               <form class="container" method='POST' action='#' enctype='multipart/form-data' id='upload_form_zb'>
                 <input type='file' name='update_zb' id='file_zb' onchange='sub_zb(this)' style=display:none
                   accept='.hex'>
-                <label id='file-input_zb' for='file_zb'> Choose file...</label>
+                <label id='file-input_zb'> Choose file...</label>
                 <input id="updButton_zb" type='submit' class='btn btn-outline-primary mb-2' value='Zigbee file update' disabled>
                 <br>
                 <div class="container" style="max-width: 300px; margin-top: 30px;">
@@ -270,8 +270,8 @@
         modalConstructor("flashZB");//
         //apiLink + api.actions.API_FLASH_ZB + "&fwurl=" + "https://raw.githubusercontent.com/Tarik2142/devHost/main/" + this.id + ".bin"
       });
-      function sub(obj) {
-        let fileName = obj.value.split('\\\\');
+      function sub() {
+        let fileName = document.getElementById("file").files[0].name;
         if (fileName != "") {
           $("#updButton").removeAttr("disabled");
           localStorage.setItem('beta_feedback', 0);
@@ -284,12 +284,12 @@
         else {
           $("#updButton").prop(disbl, 1);
         }
-        document.getElementById('file-input').innerHTML = '   ' + fileName[fileName.length - 1];
+        document.getElementById('file-input').innerHTML = '   ' + fileName
       };
       function sub_zb(obj) {
         let fileName = obj.value.split('\\\\');
         if (fileName != "") {
-          $("#updButton_zb").removeAttr("disabled");
+         // $("#updButton_zb").removeAttr("disabled");
         }
         else {
           $("#updButton_zb").prop(disbl, 1);
