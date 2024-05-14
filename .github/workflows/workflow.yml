@@ -73,3 +73,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           message: 'Release v${{ steps.get_version.outputs.version }} (${{ steps.date.outputs.date }})'
           force: true
+          branch: czc
