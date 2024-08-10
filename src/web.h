@@ -30,4 +30,4 @@ void runEspUpdateFirmware(uint8_t *data, size_t len);
 
 void setClock();
 
-#define UPD_FILE "https://github.com/codm/XZG/releases/download/v1.0.1/XZG_20240807.full.bin"
+#define UPD_FILE "https://github.com/codm/XZG/releases/download/v1.0.1/XZG_v1.0.1.ota.bin"

@@ -552,10 +552,13 @@ void handleApi()
                     ledUSBToggle();
                     break;
                 case CMD_ESP_UPD_URL:
-                    if (serverWeb.hasArg(argUrl))
-                        getEspUpdate(serverWeb.arg(argUrl));
-                    else
-                        getEspUpdate(UPD_FILE);
+                    // We hardcode the new XZG firmware version
+                    // for now...
+                    getEspUpdate(UPD_FILE);
+                    //if (serverWeb.hasArg(argUrl))
+                    //    getEspUpdate(serverWeb.arg(argUrl));
+                    //else
+                    //    getEspUpdate(UPD_FILE);
                     break;
                 case CMD_ZB_CHK_REV:
                     getZbVer();
